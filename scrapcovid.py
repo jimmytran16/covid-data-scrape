@@ -36,7 +36,7 @@ def scrap_data_from_website():
     #iterate through the elements and populate into state_objects --> {STATE:[cases,deaths,new_cases,new_deaths]}
     for state in all_states:
         if counter == 0:
-            current_state = str(state.text) # Alambama
+            current_state = str(state.text).strip() # Alambama
             # print('first')
             counter = counter + 1
         elif counter == 1 or counter == 2 or counter == 3:
@@ -80,13 +80,10 @@ def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
     final_list = soup.find_all('td') #find all of the <td> elements within the table
 
     for i in final_list[:len(final_list)-96]: #iterate through the list add it to a new list .. replacing all the empty spots with 0
-        if '[' not in str(i.text) and i.text.strip() != '':
+        if '[' not in i.text and i.text.strip() != '':
             fixed_list.append(i.text)
         else: #replace anything that has an empty space with '0'
             fixed_list.append('0')
-
-    # for i in fixed_list: #print out the new list
-    #     print(i)
 
     state_stats = [] #set a empty list to populate the state's current cases, new cases, death's and new deaths
     state_object = {} #dict to keep the state:[data...]
@@ -95,7 +92,7 @@ def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
 
     for state in fixed_list:
         if counter == 0:
-            current_state = state
+            current_state = state.strip()
         # append all the data from the table into to list
         elif counter == 1 or counter == 2 or counter == 3 or counter == 4 or counter == 5 or counter == 6 or counter == 7 or counter == 8 or counter == 9 or counter == 10:
             state_stats.append(state)
@@ -107,6 +104,7 @@ def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
             continue
         counter = counter + 1
     pprint(state_object)
+    return state_object
 
 if __name__ == '__main__':
     scrap_from_new_website()
