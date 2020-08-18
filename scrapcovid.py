@@ -56,7 +56,8 @@ def scrap_data_from_website():
     # pprint(state_object) # prints out the objects containing the states with data
 
 
-def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
+#UPDATED ON 8/7/2020
+def scrap_from_new_website(): # GIVES YOU DATA ON YESTERDAYS COVID STATUS
     #This script will scrap data off the worldometers website to attain each states covid status
     #It targets the table that is on the website that renders the data of all 50 states
 
@@ -69,12 +70,11 @@ def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
     soup = BeautifulSoup(content,features="html.parser") #call an instance of bsoup, passing in the content
     print(type(soup)) #print the data type of soup
 
-    all_states = soup.find_all('table',class_='usa_table_countries') #look for the element table with the specfic class name
+    all_states = soup.find_all('table',id="usa_table_countries_yesterday") #look for the element table with the specfic class name
 
-    # print(str(all_states[0]))
     content = bytes(str(all_states[0]).replace('\n',''),'utf8') #convert the string into byte representation, #strip all of the new lines in the string
 
-    soup = BeautifulSoup(content,features="html.parser") #pass the byte CONTENT
+    soup = BeautifulSoup(content,features="html.parser") #pass the byte CONTENT to get the BeautifulSoup instance
 
     fixed_list = [] #init a empty list
     final_list = soup.find_all('td') #find all of the <td> elements within the table
@@ -91,20 +91,19 @@ def scrap_from_new_website(): # MORE REAL TIME/ UPDATED
     current_state = '' #keep track of the current state that is being proccessed
 
     for state in fixed_list:
-        if counter == 0:
+        if counter == 1:
             current_state = state.strip()
         # append all the data from the table into to list
-        elif counter == 1 or counter == 2 or counter == 3 or counter == 4 or counter == 5 or counter == 6 or counter == 7 or counter == 8 or counter == 9 or counter == 10:
+        elif counter in [2,3,4,5,6,7,8,9,10,11,12]:
             state_stats.append(state)
-        elif counter == 11:
+        elif counter == 13:
             state_stats.append(state)
             state_object[current_state] = state_stats
             state_stats = []
             counter = 0
             continue
         counter = counter + 1
-    pprint(state_object)
-    return state_object
+    return state_object #returns back a dictionary of the STATES:[DATA]
 
 if __name__ == '__main__':
-    scrap_from_new_website()
+    pprint(scrap_from_new_website())
